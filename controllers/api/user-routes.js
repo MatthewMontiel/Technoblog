@@ -1,65 +1,82 @@
-const router = require('express').Router();
-const { User } = require('../../models');
+const router = require("express").Router();
+const authorize = require("../utils/authorize");
+const { User } = require("../models");
+const { Game } = require("../models");
 
-router.post('/', async (req, res) => {
+// loads up the home page log in request
+router.get("/", (req, res) => {
+  res.render("login");
+});
+
+// pulls the user's games to display on the shelf once logged in
+router.get("/shelf", authorize, async (req, res) => {
   try {
-    const newUser = await User.create({
-      username: req.body.username,
-      password: req.body.password,
+    // Find the logged in user based on the session ID and return their shelf data
+    const userData = await User.findByPk(req.session.user_id, {
+      attributes: { exclude: ["password"] },
+      include: [{ model: Game }],
     });
-
-    req.session.save(() => {
-      req.session.userId = newUser.id;
-      req.session.username = newUser.username;
-      req.session.loggedIn = true;
-
-      res.json(newUser);
+    const user = userData.get({ plain: true });
+    res.render("shelf", {
+      ...user,
+      logged_in: true,
     });
+    // tells what error occurred
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-router.post('/login', async (req, res) => {
+// pulls specific game on the shelf data to render in isolation once teh user is logged in
+router.get("/game/:id", async (req, res) => {
   try {
-    const user = await User.findOne({
-      where: {
-        username: req.body.username,
-      },
+    const gameData = await Game.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ["username"],
+        },
+      ],
     });
-
-    if (!user) {
-      res.status(400).json({ message: 'No user account found!' });
-      return;
-    }
-
-    const validPassword = user.checkPassword(req.body.password);
-
-    if (!validPassword) {
-      res.status(400).json({ message: 'No user account found!' });
-      return;
-    }
-
-    req.session.save(() => {
-      req.session.userId = user.id;
-      req.session.username = user.username;
-      req.session.loggedIn = true;
-
-      res.json({ user, message: 'You are now logged in!' });
+    const game = gameData.get({ plain: true });
+    res.render("project", {
+      ...project,
+      logged_in: req.session.logged_in,
     });
+    // tells what error occurred
   } catch (err) {
-    res.status(400).json({ message: 'No user account found!' });
+    res.status(500).json(err);
   }
 });
 
-router.post('/logout', (req, res) => {
-  if (req.session.loggedIn) {
-    req.session.destroy(() => {
-      res.status(204).end();
-    });
-  } else {
-    res.status(404).end();
+// check for log in and authorize and redirect or move along
+router.get("/login", (req, res) => {
+  if (req.session.logged_in) {
+    res.redirect("/shelf");
+    return;
   }
+  // return to home/log in if user not authorize
+  res.render("login");
+});
+
+// route for reviewing all users - not accessible through user interface
+router.get("/list", async (req, res) => {
+  const userData = await User.findAll().catch((err) => {
+    res.json(err);
+  });
+  const users = userData.map((user) => user.get({ plain: true }));
+
+  res.json(users);
+});
+
+// route for reviewing all games - not accessible through user interface
+router.get("/box", async (req, res) => {
+  const gameData = await Game.findAll().catch((err) => {
+    res.json(err);
+  });
+  const games = gameData.map((game) => game.get({ plain: true }));
+
+  res.json(games);
 });
 
 module.exports = router;
