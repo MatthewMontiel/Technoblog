@@ -1,11 +1,9 @@
-
 const { Model, DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("../config/connection");
 
-// user model include bcrypt salt rationing
+
 class User extends Model {
-  // lost shaker of salt test password match
   checkPassword(passwordInput) {
     return bcrypt.compareSync(passwordInput, this.password);
   }
@@ -17,29 +15,20 @@ User.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true,
-      },
+      allowNull: false
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [8, 23],
-      },
-    },
+        len: [8, 23]
+      }
+    }
   },
-  // ties in the salt to password hashing
   {
     hooks: {
       beforeCreate: async (newUserData) => {
