@@ -25,8 +25,7 @@ router.get("/post/:id", async (req, res) => {
             model: User,
          },
          {
-            model: Comment,
-            include: [User],
+            model: Comment
          }
       ],
     });
@@ -53,16 +52,6 @@ router.get("/list", async (req, res) => {
 
   res.json(users);
 });
-
-// route for reviewing all games OR SOMETHING - not accessible through user interface
-// router.get("/box", async (req, res) => {
-//   const gameData = await Game.findAll().catch((err) => {
-//     res.json(err);
-//   });
-//   const games = gameData.map((game) => game.get({ plain: true }));
-
-//   res.json(games);
-// });
 
 router.get('/signup', (req, res) => {
    res.render('signup');

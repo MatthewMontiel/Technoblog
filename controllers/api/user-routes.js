@@ -20,20 +20,20 @@ router.post("/", async (req, res) => {
      if (!userData) {
        res
          .status(400)
-         .json({ alert: `I'M AFRAID I CAN'T ACCEPT THAT INPUT, DAVE` });
+         .json({ alert: `AH, AH, AH....` });
        return;
      }
      const goodPassword = await userData.checkPassword(req.body.password);
      if (!goodPassword) {
        res
          .status(400)
-         .json({ message: `I'M AFRAID I CAN'T ACCEPT THAT INPUT, DAVE` });
+         .json({ message: `AH, AH, AH....` });
        return;
      }
      req.session.save(() => {
        req.session.user_id = userData.id;
        req.session.logged_in = true;
-       res.json({ user: userData, message: "YES! YES! YES!" });
+       res.json({ user: userData, message: "Bodacious!!!" });
      });
    } catch (err) {
      res.status(400).json(err);
