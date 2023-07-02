@@ -1,0 +1,14 @@
+<div class="posts list-group">
+  {{#each blogposts as |post|}}
+    <a class="list-item flex-row justify-space-between box" href="/dashboard/edit-post/{{id}}">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <span>{{post.title}}</span>
+        </div>
+        <div class="column">
+          <span>{{format_date createdAt}}</span>
+        </div>
+      </div>
+    </a>
+  {{/each}}
+</div>
