@@ -1,4 +1,4 @@
-# backendofstore
+# Technoblog
 ![GitHub license](https://img.shields.io/badge/license-MIT-yellowgreen.svg)
 ## Table of Contents
 * [Description](#description)
