@@ -15,6 +15,7 @@
 ## Description
 A web blog that allows users to sign up with a password that is 8 characters or longer. The user can then update a post and that is then added to a post timeline. 
 
+![Screenshot 2023-07-11 at 7 14 37 PM](https://github.com/MatthewMontiel/Technoblog/assets/120674910/cf9cef91-de64-4f46-b166-c98417aaeadd)
 
 
 ## Installation
